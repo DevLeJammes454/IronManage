@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password_hash String
+  company_name  String?
+  address       String?
+  phone         String?
+  tax_rate      Decimal? @default(0)
+  logo_url      String?
+  createdAt     DateTime @default(now())
+  materials     Material[]
+  projects      Project[]
+  clients       Client[]
+  offcuts       Offcut[]
+}
+
+model Material {
+  id           Int      @id @default(autoincrement())
+  name         String
+  category     String
+  price_black  Decimal
+  price_zintro Decimal
+  length       Decimal  @default(6.00)
+  stock        Int
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  projectItems ProjectItem[]
+  offcuts      Offcut[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Offcut {
+  id         Int      @id @default(autoincrement())
+  materialId Int
+  material   Material @relation(fields: [materialId], references: [id])
+  length     Decimal
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Client {
+  id        Int       @id @default(autoincrement())
+  name      String
+  phone     String?
+  address   String?
+  email     String?
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id           Int           @id @default(autoincrement())
+  clientName   String?       // Kept for legacy/quick quotes
+  clientId     Int?
+  client       Client?       @relation(fields: [clientId], references: [id])
+  status       String        @default("DRAFT") // DRAFT, APPROVED
+  isZintro     Boolean       @default(false)
+  totalCost    Decimal
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id])
+  items        ProjectItem[]
+  createdAt    DateTime      @default(now())
+}
+
+model ProjectItem {
+  id                   Int      @id @default(autoincrement())
+  projectId            Int
+  project              Project  @relation(fields: [projectId], references: [id])
+  materialId           Int
+  material             Material @relation(fields: [materialId], references: [id])
+  quantity_bars_needed Int
+  linear_meters        Decimal
+  cost                 Decimal
+}
