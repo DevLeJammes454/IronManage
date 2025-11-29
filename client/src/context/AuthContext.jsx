@@ -27,15 +27,27 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const res = await api.post('/auth/login', { email, password });
-        localStorage.setItem('token', res.data.token);
-        setUser(res.data.user);
+        try {
+            const res = await api.post('/auth/login', { email, password });
+            localStorage.setItem('token', res.data.token);
+            setUser(res.data.user);
+            return { success: true };
+        } catch (error) {
+            console.error("Login failed", error);
+            return { success: false, message: error.response?.data?.message || 'Login failed' };
+        }
     };
 
     const register = async (email, password, company_name) => {
-        const res = await api.post('/auth/register', { email, password, company_name });
-        localStorage.setItem('token', res.data.token);
-        setUser(res.data.user);
+        try {
+            const res = await api.post('/auth/register', { email, password, company_name });
+            localStorage.setItem('token', res.data.token);
+            setUser(res.data.user);
+            return { success: true };
+        } catch (error) {
+            console.error("Registration failed", error);
+            return { success: false, message: error.response?.data?.message || 'Registration failed' };
+        }
     };
 
     const logout = () => {
