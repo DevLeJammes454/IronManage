@@ -30,7 +30,20 @@ exports.register = async (req, res) => {
             },
         });
 
-        res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
+        // Generate Token
+        const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET || 'secret_key', {
+            expiresIn: '1h',
+        });
+
+        res.status(201).json({
+            message: 'User registered successfully',
+            token,
+            user: {
+                id: newUser.id,
+                email: newUser.email,
+                company_name: newUser.company_name
+            }
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
