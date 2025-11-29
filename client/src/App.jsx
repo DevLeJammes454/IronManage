@@ -9,6 +9,9 @@ import QuoterPage from './pages/QuoterPage';
 import ClientsPage from './pages/ClientsPage';
 import KanbanBoard from './pages/KanbanBoard';
 import SettingsPage from './pages/SettingsPage';
+import LandingPage from './pages/LandingPage';
+
+import Layout from './components/Layout';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -19,7 +22,7 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
-  return children;
+  return <Layout>{children}</Layout>;
 };
 
 function App() {
@@ -27,10 +30,11 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <DashboardPage />

@@ -14,7 +14,7 @@ const RegisterPage = () => {
     const onSubmit = async (data) => {
         const result = await registerUser(data.email, data.password, data.company_name);
         if (result.success) {
-            navigate('/login');
+            navigate('/dashboard');
         } else {
             setError(result.message);
         }

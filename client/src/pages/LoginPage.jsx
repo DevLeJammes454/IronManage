@@ -14,7 +14,7 @@ const LoginPage = () => {
     const onSubmit = async (data) => {
         const result = await login(data.email, data.password);
         if (result.success) {
-            navigate('/');
+            navigate('/dashboard');
         } else {
             setError(result.message);
         }

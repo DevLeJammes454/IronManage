@@ -1,17 +1,33 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const DashboardPage = () => {
-    const { user, logout } = useAuth();
-    const [stats, setStats] = useState(null);
+    const { user } = useAuth();
+    const [stats, setStats] = useState({
+        totalRevenue: 0,
+        activeProjects: 0,
+        lowStockCount: 0,
+        monthlySales: []
+    });
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
                 const res = await api.get('/dashboard/stats');
-                setStats(res.data);
+                // Ensure we handle the response data structure correctly
+                // The backend returns: { total_revenue_month, active_projects, low_stock_count, monthly_sales_history }
+                // We map it to our component state structure
+                if (res.data) {
+                    setStats({
+                        totalRevenue: res.data.total_revenue_month || 0,
+                        activeProjects: res.data.active_projects || 0,
+                        lowStockCount: res.data.low_stock_count || 0,
+                        monthlySales: res.data.monthly_sales_history || []
+                    });
+                }
             } catch (error) {
                 console.error('Error fetching stats:', error);
             }
@@ -20,80 +36,47 @@ const DashboardPage = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col">
-            {/* Header */}
-            <header className="bg-white shadow">
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-gray-900">IronManage Dashboard</h1>
-                    <div className="flex items-center gap-4">
-                        <span className="text-gray-600">Hola, {user?.company_name || user?.email}</span>
-                        <a href="/settings" className="text-gray-600 hover:text-gray-900">Configuración</a>
-                        <button
-                            onClick={logout}
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm"
-                        >
-                            Cerrar Sesión
-                        </button>
-                    </div>
-                </div>
-            </header>
+        <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-8">Dashboard</h1>
 
-            {/* Main Content */}
-            <main className="flex-grow container mx-auto px-4 py-8">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
-                        <h3 className="text-gray-500 text-sm uppercase font-bold">Ventas del Mes</h3>
-                        <p className="text-3xl font-bold text-gray-800">${stats?.total_revenue_month?.toFixed(2) || '0.00'}</p>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
-                        <h3 className="text-gray-500 text-sm uppercase font-bold">Proyectos Activos</h3>
-                        <p className="text-3xl font-bold text-gray-800">{stats?.active_projects || 0}</p>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow border-l-4 border-red-500">
-                        <h3 className="text-gray-500 text-sm uppercase font-bold">Stock Bajo</h3>
-                        <p className="text-3xl font-bold text-red-600">{stats?.low_stock_count || 0}</p>
-                    </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-2">Ingresos Totales</h3>
+                    <p className="text-3xl font-bold text-slate-900">${stats.totalRevenue.toFixed(2)}</p>
                 </div>
-
-                {/* Charts & Actions */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Chart */}
-                    <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">Historial de Ventas (6 Meses)</h3>
-                        <div className="h-64 w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={stats?.monthly_sales_history || []}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar dataKey="sales" fill="#4F46E5" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-
-                    {/* Quick Actions */}
-                    <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">Acciones Rápidas</h3>
-                        <div className="flex flex-col gap-3">
-                            <a href="/materials" className="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 text-center font-semibold">
-                                Gestionar Inventario
-                            </a>
-                            <a href="/clients" className="bg-indigo-600 text-white px-4 py-3 rounded hover:bg-indigo-700 text-center font-semibold">
-                                Gestionar Clientes
-                            </a>
-                            <a href="/quoter" className="bg-green-600 text-white px-4 py-3 rounded hover:bg-green-700 text-center font-semibold">
-                                Nuevo Proyecto
-                            </a>
-                            <a href="/kanban" className="bg-orange-600 text-white px-4 py-3 rounded hover:bg-orange-700 text-center font-semibold">
-                                Producción (Kanban)
-                            </a>
-                        </div>
-                    </div>
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-2">Proyectos Activos</h3>
+                    <p className="text-3xl font-bold text-blue-600">{stats.activeProjects}</p>
                 </div>
-            </main>
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-2">Materiales Bajos en Stock</h3>
+                    <p className="text-3xl font-bold text-red-600">{stats.lowStockCount}</p>
+                </div>
+            </div>
+
+            {/* Chart Section */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+                <h2 className="text-xl font-bold text-slate-900 mb-6">Historial de Ventas</h2>
+                <div className="h-80 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={stats.monthlySales}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} tickFormatter={(value) => `$${value}`} />
+                            <Tooltip
+                                cursor={{ fill: '#f1f5f9' }}
+                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                            />
+                            <Bar dataKey="sales" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+
+            <div className="flex justify-end">
+                <Link to="/settings" className="text-blue-600 hover:text-blue-800 font-medium text-sm">Ir a Configuración →</Link>
+            </div>
         </div>
     );
 };

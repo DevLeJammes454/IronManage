@@ -100,17 +100,17 @@ const QuoterPage = () => {
     const selectedClient = clients.find(c => c.id === parseInt(selectedClientId));
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Cotizador de Proyectos</h1>
+        <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-8">Cotizador de Proyectos</h1>
 
             {/* Global Config */}
-            <div className="bg-white p-6 rounded-lg shadow mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <span className="text-lg font-semibold text-gray-700">Cliente:</span>
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex flex-col w-full md:w-auto gap-2">
+                    <label className="text-sm font-medium text-slate-700">Seleccionar Cliente</label>
                     <select
                         value={selectedClientId}
                         onChange={(e) => setSelectedClientId(e.target.value)}
-                        className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow-sm border border-slate-300 rounded-lg py-2.5 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                         <option value="">Seleccione un Cliente...</option>
                         {clients.map(c => (
@@ -119,28 +119,32 @@ const QuoterPage = () => {
                     </select>
                 </div>
 
-                <div className="flex items-center">
-                    <span className={`mr-2 font-bold ${!isZintro ? 'text-black' : 'text-gray-400'}`}>Negro</span>
-                    <div
-                        className={`relative inline-block w-12 h-6 transition duration-200 ease-in-out rounded-full cursor-pointer ${isZintro ? 'bg-blue-600' : 'bg-gray-300'}`}
-                        onClick={() => setIsZintro(!isZintro)}
+                <div className="flex items-center bg-slate-100 p-1 rounded-lg">
+                    <button
+                        onClick={() => setIsZintro(false)}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${!isZintro ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        <span className={`absolute left-0 inline-block w-6 h-6 bg-white border-2 border-gray-300 rounded-full transform transition-transform duration-200 ease-in-out ${isZintro ? 'translate-x-6 border-blue-600' : 'translate-x-0'}`}></span>
-                    </div>
-                    <span className={`ml-2 font-bold ${isZintro ? 'text-blue-600' : 'text-gray-400'}`}>Zintro</span>
+                        Negro
+                    </button>
+                    <button
+                        onClick={() => setIsZintro(true)}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${isZintro ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        Zintro
+                    </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Add Item Form */}
-                <div className="bg-white p-6 rounded-lg shadow h-fit">
-                    <h2 className="text-xl font-bold mb-4 text-gray-700">Agregar Material</h2>
-                    <form onSubmit={handleSubmit(addToCart)}>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">Material</label>
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 h-fit">
+                    <h2 className="text-xl font-bold mb-6 text-slate-900">Agregar Material</h2>
+                    <form onSubmit={handleSubmit(addToCart)} className="space-y-4">
+                        <div>
+                            <label className="block text-slate-700 text-sm font-medium mb-2">Material</label>
                             <select
                                 {...register('materialId', { required: true })}
-                                className="shadow border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="shadow-sm border border-slate-300 rounded-lg w-full py-2.5 px-4 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Seleccione...</option>
                                 {materials.map(m => (
@@ -154,46 +158,56 @@ const QuoterPage = () => {
                             step="0.01"
                             {...register('linear_meters', { required: true, min: 0.1 })}
                         />
-                        <Button type="submit">Agregar a la Lista</Button>
+                        <div className="pt-2">
+                            <Button type="submit">Agregar a la Lista</Button>
+                        </div>
                     </form>
                 </div>
 
                 {/* Cart & Summary */}
-                <div className="bg-white p-6 rounded-lg shadow">
-                    <h2 className="text-xl font-bold mb-4 text-gray-700">Resumen del Proyecto</h2>
-                    {cart.length === 0 ? (
-                        <p className="text-gray-500">No hay items agregados.</p>
-                    ) : (
-                        <div className="space-y-4">
-                            {cart.map(item => (
-                                <div key={item.id} className="flex justify-between items-center border-b pb-2">
-                                    <div>
-                                        <p className="font-bold text-gray-800">{item.name}</p>
-                                        <p className="text-sm text-gray-600">
-                                            {item.linear_meters}m requeridos → <span className="font-bold text-blue-600">{item.bars} barras (6m)</span>
-                                        </p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-bold text-gray-800">${item.cost.toFixed(2)}</p>
-                                        <button onClick={() => removeFromCart(item.id)} className="text-xs text-red-500 hover:underline">Eliminar</button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col h-full">
+                    <h2 className="text-xl font-bold mb-6 text-slate-900">Resumen del Proyecto</h2>
 
-                    <div className="mt-6 border-t pt-4">
-                        <div className="flex justify-between items-center text-xl font-bold text-gray-900">
-                            <span>Total Estimado:</span>
-                            <span>${totalCost.toFixed(2)}</span>
+                    <div className="flex-1 overflow-y-auto max-h-[400px] pr-2">
+                        {cart.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-40 text-slate-400 border-2 border-dashed border-slate-200 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <p>No hay items agregados.</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {cart.map(item => (
+                                    <div key={item.id} className="flex justify-between items-start p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                        <div>
+                                            <p className="font-semibold text-slate-900">{item.name}</p>
+                                            <p className="text-sm text-slate-500 mt-1">
+                                                {item.linear_meters}m → <span className="font-medium text-blue-600">{item.bars} barras</span>
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold text-slate-900">${item.cost.toFixed(2)}</p>
+                                            <button onClick={() => removeFromCart(item.id)} className="text-xs text-red-500 hover:text-red-700 font-medium mt-1">Eliminar</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="mt-8 border-t border-slate-200 pt-6">
+                        <div className="flex justify-between items-center mb-6">
+                            <span className="text-lg font-medium text-slate-600">Total Estimado</span>
+                            <span className="text-3xl font-bold text-slate-900">${totalCost.toFixed(2)}</span>
                         </div>
-                        <div className="flex gap-2 mt-4">
+                        <div className="grid grid-cols-2 gap-4">
                             {cart.length > 0 && (
                                 <>
-                                    <Button onClick={saveProject} className="bg-green-600 hover:bg-green-700 flex-1">
-                                        Guardar Proyecto
+                                    <Button onClick={saveProject} className="bg-green-600 hover:bg-green-700">
+                                        Guardar
                                     </Button>
-                                    <Button onClick={handlePrint} className="bg-gray-800 hover:bg-gray-900 flex-1">
+                                    <Button onClick={handlePrint} className="bg-slate-800 hover:bg-slate-900">
                                         Imprimir PDF
                                     </Button>
                                 </>
