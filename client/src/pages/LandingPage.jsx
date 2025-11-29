@@ -1,136 +1,296 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+    LayoutDashboard,
+    Calculator,
+    Package,
+    Users,
+    CheckCircle,
+    BarChart3,
+    ShieldCheck,
+    Zap,
+    Menu,
+    X,
+    ArrowRight,
+    Moon,
+    Sun,
+    Hammer,
+    ChevronRight
+} from 'lucide-react';
+import ThemeToggle from '../components/ThemeToggle';
 
+// --- COMPONENTE LANDING PAGE ---
 const LandingPage = () => {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     return (
-        <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300 font-sans selection:bg-blue-500 selection:text-white">
+
             {/* Navbar */}
-            <nav className="bg-white shadow-sm sticky top-0 z-50">
+            <nav className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <div className="flex-shrink-0 flex items-center">
-                            <span className="text-2xl font-bold text-slate-900 tracking-tight">IronManage</span>
+                        {/* Logo */}
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo(0, 0)}>
+                            <div className="bg-blue-600 p-1.5 rounded-lg text-white">
+                                <Hammer size={20} fill="currentColor" />
+                            </div>
+                            <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                                Iron<span className="text-blue-600">Manage</span>
+                            </span>
                         </div>
-                        <div className="flex items-center space-x-4">
-                            <Link
-                                to="/login"
-                                className="text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-md transition-colors"
-                            >
+
+                        {/* Desktop Nav */}
+                        <div className="hidden md:flex items-center space-x-8">
+                            <a href="#features" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Características</a>
+                            <a href="#testimonials" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Testimonios</a>
+                            <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+                            <ThemeToggle />
+                            <Link to="/login" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
                                 Iniciar Sesión
                             </Link>
                             <Link
                                 to="/register"
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow-sm transition-colors"
+                                className="bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-blue-500/10 transition-all hover:-translate-y-0.5"
                             >
-                                Comenzar
+                                Prueba Gratis
                             </Link>
+                        </div>
+
+                        {/* Mobile Menu Button */}
+                        <div className="flex md:hidden items-center gap-4">
+                            <ThemeToggle />
+                            <button
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                className="text-slate-600 dark:text-slate-300"
+                            >
+                                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                {/* Mobile Menu */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-6 space-y-4 shadow-xl animate-in slide-in-from-top-5">
+                        <a href="#features" className="block text-base font-medium text-slate-600 dark:text-slate-300 py-2">Características</a>
+                        <Link to="/login" className="block text-base font-medium text-slate-600 dark:text-slate-300 py-2">Iniciar Sesión</Link>
+                        <Link to="/register" className="block w-full text-center bg-blue-600 text-white font-bold py-3 rounded-lg">
+                            Comenzar Ahora
+                        </Link>
+                    </div>
+                )}
             </nav>
 
             {/* Hero Section */}
-            <div className="relative bg-slate-900 overflow-hidden">
-                <div className="absolute inset-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-900 to-slate-900 opacity-90"></div>
-                </div>
-                <div className="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
-                        Gestiona tu Taller de Herrería <br className="hidden md:block" />
-                        <span className="text-blue-400">como un Profesional</span>
-                    </h1>
-                    <p className="mt-4 max-w-2xl text-xl text-slate-300 mb-10">
-                        Cotiza en segundos, controla tu inventario y genera órdenes de trabajo.
-                        Deja el papel y lápiz en el pasado y lleva tu negocio al siguiente nivel.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Link
-                            to="/register"
-                            className="bg-blue-600 hover:bg-blue-500 text-white text-lg font-bold px-8 py-4 rounded-lg shadow-lg transform hover:-translate-y-1 transition-all duration-200"
-                        >
-                            Crear Cuenta Gratis
-                        </Link>
-                        <Link
-                            to="/login"
-                            className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-lg font-semibold px-8 py-4 rounded-lg border border-slate-700 transition-colors"
-                        >
-                            Ya tengo cuenta
-                        </Link>
-                    </div>
+            <div className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 z-0 opacity-40 dark:opacity-20 pointer-events-none">
+                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                    <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-500 opacity-20 blur-[100px]"></div>
                 </div>
 
-                {/* Decorative curve */}
-                <div className="absolute bottom-0 w-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="text-slate-50 fill-current">
-                        <path fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                    </svg>
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div className="flex-1 text-center lg:text-left">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wide mb-6 border border-blue-100 dark:border-blue-800 animate-fade-in">
+                            <Zap size={14} fill="currentColor" /> Nueva versión 2.0 disponible
+                        </div>
+                        <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight mb-6">
+                            El sistema operativo para tu <br className="hidden lg:block" />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                                Taller de Herrería
+                            </span>
+                        </h1>
+                        <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            IronManage elimina el caos de las cotizaciones y el inventario. Digitaliza tu negocio, reduce el desperdicio y entrega tus proyectos a tiempo.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <Link
+                                to="/register"
+                                className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold px-8 py-4 rounded-xl shadow-lg shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-200"
+                            >
+                                Empezar Gratis <ArrowRight size={20} />
+                            </Link>
+                            <Link
+                                to="/login"
+                                className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-lg font-semibold px-8 py-4 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors"
+                            >
+                                Ver Demo
+                            </Link>
+                        </div>
+
+                        <div className="mt-10 flex items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 dark:text-slate-400">
+                            <div className="flex -space-x-2">
+                                {[1, 2, 3, 4].map(i => (
+                                    <div key={i} className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-900"></div>
+                                ))}
+                            </div>
+                            <p>Usado por <span className="font-bold text-slate-700 dark:text-slate-200">+500 talleres</span> en México.</p>
+                        </div>
+                    </div>
+
+                    {/* Hero Visual / Dashboard Preview */}
+                    <div className="flex-1 w-full max-w-xl lg:max-w-full relative">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur opacity-30 animate-pulse"></div>
+                        <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            {/* Mockup Header */}
+                            <div className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700 p-4 flex items-center gap-4">
+                                <div className="flex gap-1.5">
+                                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                                </div>
+                                <div className="h-2 w-32 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+                            </div>
+                            {/* Mockup Body */}
+                            <div className="p-6 grid gap-6">
+                                <div className="flex gap-4">
+                                    <div className="flex-1 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 p-4">
+                                        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-lg mb-2"></div>
+                                        <div className="h-2 w-16 bg-blue-200 dark:bg-blue-700 rounded mb-1"></div>
+                                        <div className="h-6 w-12 bg-blue-300 dark:bg-blue-600 rounded"></div>
+                                    </div>
+                                    <div className="flex-1 h-24 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800 p-4">
+                                        <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-lg mb-2"></div>
+                                        <div className="h-2 w-16 bg-green-200 dark:bg-green-700 rounded mb-1"></div>
+                                        <div className="h-6 w-20 bg-green-300 dark:bg-green-600 rounded"></div>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded"></div>
+                                    <div className="h-2 w-5/6 bg-slate-100 dark:bg-slate-700 rounded"></div>
+                                    <div className="h-2 w-4/6 bg-slate-100 dark:bg-slate-700 rounded"></div>
+                                </div>
+                                <div className="h-32 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-center">
+                                    <BarChart3 className="text-slate-300 dark:text-slate-600 w-16 h-16" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Features Section */}
-            <div className="py-24 bg-slate-50">
+            <div id="features" className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Características</h2>
-                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                            Todo lo que necesitas en un solo lugar
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 tracking-wider uppercase mb-2">
+                            Características Principales
+                        </h2>
+                        <h3 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4">
+                            Todo lo que necesitas para crecer tu taller
+                        </h3>
+                        <p className="text-lg text-slate-500 dark:text-slate-400">
+                            Diseñado por expertos en metalmecánica para resolver los problemas reales del día a día.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                        {/* Feature 1 */}
-                        <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-shadow duration-300 border border-slate-100">
-                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6 text-blue-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Cotizador Inteligente</h3>
-                            <p className="text-slate-600">
-                                Calcula costos exactos separando precios de material Negro y Zintro. Optimiza el uso de barras de 6 metros automáticamente.
-                            </p>
-                        </div>
-
-                        {/* Feature 2 */}
-                        <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-shadow duration-300 border border-slate-100">
-                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-6 text-green-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Control de Stock</h3>
-                            <p className="text-slate-600">
-                                Mantén tu inventario al día. El sistema descuenta materiales automáticamente al aprobar proyectos y gestiona retazos.
-                            </p>
-                        </div>
-
-                        {/* Feature 3 */}
-                        <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-shadow duration-300 border border-slate-100">
-                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6 text-purple-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">PDFs Profesionales</h3>
-                            <p className="text-slate-600">
-                                Genera cotizaciones en PDF con tu logo y datos de empresa listos para enviar a tus clientes por WhatsApp o correo.
-                            </p>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[
+                            {
+                                icon: Calculator,
+                                title: 'Cotizador Inteligente',
+                                desc: 'Calcula costos de materiales lineales (PTR, Viga), mano de obra y desperdicios automáticamente.'
+                            },
+                            {
+                                icon: Package,
+                                title: 'Control de Inventario',
+                                desc: 'Rastrea perfiles, láminas y consumibles. Gestiona retazos utilizables y recibe alertas de stock.'
+                            },
+                            {
+                                icon: LayoutDashboard,
+                                title: 'Dashboard en Tiempo Real',
+                                desc: 'Visualiza tus ventas, proyectos activos y ganancias con gráficas claras y actualizadas.'
+                            },
+                            {
+                                icon: Users,
+                                title: 'CRM de Clientes',
+                                desc: 'Mantén un registro detallado de tus clientes, historial de proyectos y estados de cuenta.'
+                            },
+                            {
+                                icon: CheckCircle,
+                                title: 'Seguimiento de Proyectos',
+                                desc: 'Kanban para controlar el estado de cada trabajo, desde el corte hasta la instalación.'
+                            },
+                            {
+                                icon: ShieldCheck,
+                                title: 'Datos Seguros',
+                                desc: 'Tus cotizaciones y diseños están protegidos en la nube. Accede desde cualquier lugar.'
+                            }
+                        ].map((feature, index) => {
+                            const Icon = feature.icon;
+                            return (
+                                <div key={index} className="group bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 border border-slate-100 dark:border-slate-700 hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300">
+                                    <div className="bg-white dark:bg-slate-700 rounded-xl p-3 w-fit mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                        <Icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
+                                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                        {feature.desc}
+                                    </p>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
 
+            {/* CTA Section */}
+            <div className="bg-slate-900 relative overflow-hidden py-24">
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+                    <div className="absolute -top-[50%] -left-[10%] w-[500px] h-[500px] rounded-full bg-blue-600 blur-[120px] opacity-20"></div>
+                    <div className="absolute bottom-[0%] right-[0%] w-[400px] h-[400px] rounded-full bg-cyan-500 blur-[100px] opacity-20"></div>
+                </div>
+
+                <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                        ¿Listo para modernizar tu taller?
+                    </h2>
+                    <p className="text-xl text-slate-300 mb-10">
+                        Únete a IronManage hoy y recupera el control de tu tiempo y dinero.
+                        Empieza con 14 días gratis, sin tarjeta de crédito.
+                    </p>
+                    <Link
+                        to="/register"
+                        className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-lg font-bold px-10 py-4 rounded-xl shadow-lg shadow-blue-900/50 transform hover:scale-105 transition-all duration-200"
+                    >
+                        Comenzar Prueba Gratuita <ChevronRight />
+                    </Link>
+                    <p className="mt-4 text-sm text-slate-500">
+                        Cancela cuando quieras. Soporte incluido.
+                    </p>
+                </div>
+            </div>
+
             {/* Footer */}
-            <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-                    <div className="mb-4 md:mb-0">
-                        <span className="text-2xl font-bold text-white tracking-tight">IronManage</span>
-                        <p className="text-sm mt-1">© {new Date().getFullYear()} IronManage. Todos los derechos reservados.</p>
+            <footer className="bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 py-12 border-t border-slate-200 dark:border-slate-800">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex flex-col items-center md:items-start">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="bg-blue-600 p-1 rounded-md text-white">
+                                <Hammer size={16} fill="currentColor" />
+                            </div>
+                            <span className="text-lg font-bold text-slate-900 dark:text-white">
+                                Iron<span className="text-blue-600">Manage</span>
+                            </span>
+                        </div>
+                        <p className="text-sm">© {new Date().getFullYear()} IronManage Inc.</p>
                     </div>
-                    <div className="flex space-x-6">
-                        <a href="#" className="hover:text-white transition-colors">Términos</a>
-                        <a href="#" className="hover:text-white transition-colors">Privacidad</a>
-                        <a href="#" className="hover:text-white transition-colors">Contacto</a>
+
+                    <div className="flex gap-8 text-sm font-medium">
+                        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Términos</a>
+                        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacidad</a>
+                        <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Soporte</a>
+                    </div>
+
+                    <div className="flex gap-4">
+                        {/* Social Icons placeholders */}
+                        <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer">
+                            <span className="font-bold text-xs">Tw</span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer">
+                            <span className="font-bold text-xs">Fb</span>
+                        </div>
                     </div>
                 </div>
             </footer>

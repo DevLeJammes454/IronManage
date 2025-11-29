@@ -149,3 +149,31 @@ exports.approveProject = async (req, res) => {
         res.status(400).json({ message: error.message || 'Transaction failed' });
     }
 };
+
+exports.completeProject = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const project = await prisma.project.findUnique({
+            where: { id: parseInt(id), userId: req.user.id },
+        });
+
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        if (project.status !== 'IN_PROGRESS') {
+            return res.status(400).json({ message: 'Project must be IN_PROGRESS to complete' });
+        }
+
+        const updatedProject = await prisma.project.update({
+            where: { id: parseInt(id) },
+            data: { status: 'COMPLETED' },
+        });
+
+        res.json(updatedProject);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};

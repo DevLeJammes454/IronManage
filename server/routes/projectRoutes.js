@@ -22,5 +22,6 @@ router.use(verifyToken);
 router.get('/', projectController.getProjects);
 router.post('/', projectController.createProject);
 router.post('/:id/approve', projectController.approveProject);
+router.post('/:id/complete', projectController.completeProject);
 
 module.exports = router;

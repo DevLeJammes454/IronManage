@@ -18,6 +18,33 @@ exports.createMaterial = async (req, res) => {
     try {
         const { name, category, price_black, price_zintro, length, stock } = req.body;
 
+        // Check if material with same name exists for this user
+        const existingMaterial = await prisma.material.findFirst({
+            where: {
+                name: {
+                    equals: name,
+                    mode: 'insensitive', // Case insensitive check
+                },
+                userId: req.user.id
+            }
+        });
+
+        if (existingMaterial) {
+            // Update existing material
+            const updatedMaterial = await prisma.material.update({
+                where: { id: existingMaterial.id },
+                data: {
+                    stock: existingMaterial.stock + parseInt(stock), // Add to existing stock
+                    price_black: price_black, // Update to latest price
+                    price_zintro: price_zintro, // Update to latest price
+                    category: category, // Update category if changed
+                    length: length || existingMaterial.length
+                }
+            });
+            return res.status(200).json(updatedMaterial);
+        }
+
+        // Create new material
         const newMaterial = await prisma.material.create({
             data: {
                 name,
